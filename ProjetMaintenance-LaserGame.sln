@@ -5,6 +5,10 @@ VisualStudioVersion = 15.0.28307.106
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LaserGame", "LaserGame\LaserGame.csproj", "{6472E910-4A82-4E7A-B0A7-ED75CF543CB4}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Domain", "Domain\Domain.csproj", "{2DF1F3D1-782E-4E6D-BEDD-DB6F88DB3BB6}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UnitTestProject", "UnitTestProject\UnitTestProject.csproj", "{E9E43530-4E47-4491-9642-547F54D7A41F}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -15,6 +19,14 @@ Global
 		{6472E910-4A82-4E7A-B0A7-ED75CF543CB4}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{6472E910-4A82-4E7A-B0A7-ED75CF543CB4}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{6472E910-4A82-4E7A-B0A7-ED75CF543CB4}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2DF1F3D1-782E-4E6D-BEDD-DB6F88DB3BB6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2DF1F3D1-782E-4E6D-BEDD-DB6F88DB3BB6}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2DF1F3D1-782E-4E6D-BEDD-DB6F88DB3BB6}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2DF1F3D1-782E-4E6D-BEDD-DB6F88DB3BB6}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E9E43530-4E47-4491-9642-547F54D7A41F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E9E43530-4E47-4491-9642-547F54D7A41F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E9E43530-4E47-4491-9642-547F54D7A41F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E9E43530-4E47-4491-9642-547F54D7A41F}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
