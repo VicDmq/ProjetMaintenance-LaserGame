@@ -14,14 +14,26 @@ namespace Domain
             this.score = 0;
         }
 
-        public void incrementScore()
+        public string Name
         {
-            this.score += 5;
+            get { return this.name; }
         }
 
-        public int getScore()
+        public int Score
         {
-            return this.score;
+            get { return this.score; }
+        }
+
+        public void ShootAt(string positionName)
+        {
+            Position position = Positions.GetPositionByString(positionName);
+            this.score += position.Bonus;
+        }
+
+        public void IsShootedAt(string positionName)
+        {
+            Position position = Positions.GetPositionByString(positionName);
+            this.score -= position.Malus;
         }
     }
 }
