@@ -7,52 +7,49 @@ namespace UnitTestProject
     [TestClass]
     public class PositionsTest
     {
-        private bool CheckAttributesValues(Position position, string expectedName, int expectedBonus, int expectedMalus)
-        {
-            return expectedName == position.Name
-                && expectedBonus == position.Bonus
-                && expectedMalus == position.Malus;
-        }
-
-
         [TestMethod]
         public void TestGetPositionWithShoulderString()
         {
+            Position expectedPosition = new Position("Épaule", 15, 5);
             Position position = Positions.GetPositionByString("Épaule");
 
-            Assert.IsTrue(this.CheckAttributesValues(position, "Épaule", 15, 5));
+            Assert.AreEqual(expectedPosition, position);
         }
 
         [TestMethod]
         public void TestGetPositionWithWeaponString()
         {
+            Position expectedPosition = new Position("Arme", 20, 8);
             Position position = Positions.GetPositionByString("Arme");
 
-            Assert.IsTrue(this.CheckAttributesValues(position, "Arme", 20, 8));
+            Assert.AreEqual(expectedPosition, position);
         }
 
         [TestMethod]
         public void TestGetPositionWithTorsoString()
         {
+            Position expectedPosition = new Position("Torse", 10, 3);
             Position position = Positions.GetPositionByString("Torse");
 
-            Assert.IsTrue(this.CheckAttributesValues(position, "Torse", 10, 3));
+            Assert.AreEqual(expectedPosition, position);
         }
 
         [TestMethod]
         public void TestGetPositionWithBackString()
         {
+            Position expectedPosition = new Position("Dos", 8, 2);
             Position position = Positions.GetPositionByString("Dos");
 
-            Assert.IsTrue(this.CheckAttributesValues(position, "Dos", 8, 2));
+            Assert.AreEqual(expectedPosition, position);
         }
 
         [TestMethod]
         public void TestGetPositionWithWrongString()
         {
+            Position expectedPosition = new Position("", 0, 0);
             Position position = Positions.GetPositionByString("fzefezze");
 
-            Assert.IsTrue(this.CheckAttributesValues(position, "", 0, 0));
+            Assert.AreEqual(expectedPosition, position);
         }
     }
 }
