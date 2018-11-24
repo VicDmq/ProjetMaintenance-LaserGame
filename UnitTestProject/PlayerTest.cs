@@ -11,7 +11,9 @@ namespace UnitTestProject
         public void TestPlayerShootAtShoulderPosition()
         {
             Player player = new Player("RandomPlayer");
-            player.ShootAt("Épaule");
+            Position shoulder = Positions.GetPositionByString("Épaule");
+
+            player.ShootAt(shoulder);
 
             Assert.AreEqual(15, player.Score);
         }
@@ -20,7 +22,9 @@ namespace UnitTestProject
         public void TestPlayerShootAtWeaponPosition()
         {
             Player player = new Player("RandomPlayer");
-            player.ShootAt("Arme");
+            Position weapon = Positions.GetPositionByString("Arme");
+
+            player.ShootAt(weapon);
 
             Assert.AreEqual(20, player.Score);
         }
@@ -29,7 +33,9 @@ namespace UnitTestProject
         public void TestPlayerShootAtTorsoPosition()
         {
             Player player = new Player("RandomPlayer");
-            player.ShootAt("Torse");
+            Position torso = Positions.GetPositionByString("Torse");
+
+            player.ShootAt(torso);
 
             Assert.AreEqual(10, player.Score);
         }
@@ -38,7 +44,9 @@ namespace UnitTestProject
         public void TestPlayerShootAtBackPosition()
         {
             Player player = new Player("RandomPlayer");
-            player.ShootAt("Dos");
+            Position back = Positions.GetPositionByString("Dos");
+
+            player.ShootAt(back);
 
             Assert.AreEqual(8, player.Score);
         }
@@ -47,7 +55,9 @@ namespace UnitTestProject
         public void TestPlayerShootAtWrongPosition()
         {
             Player player = new Player("RandomPlayer");
-            player.ShootAt("afezger");
+            Position undefinedPosition = Positions.GetPositionByString("afezger");
+
+            player.ShootAt(undefinedPosition);
 
             Assert.AreEqual(0, player.Score);
         }
@@ -56,7 +66,9 @@ namespace UnitTestProject
         public void TestPlayerIsShootedAtShoulderPosition()
         {
             Player player = new Player("RandomPlayer");
-            player.IsShootedAt("Épaule");
+            Position shoulder = Positions.GetPositionByString("Épaule");
+
+            player.IsShootedAt(shoulder);
 
             Assert.AreEqual(-5, player.Score);
         }
@@ -65,7 +77,9 @@ namespace UnitTestProject
         public void TestPlayerIsShootedAtWeaponPosition()
         {
             Player player = new Player("RandomPlayer");
-            player.IsShootedAt("Arme");
+            Position weapon = Positions.GetPositionByString("Arme");
+
+            player.IsShootedAt(weapon);
 
             Assert.AreEqual(-8, player.Score);
         }
@@ -74,7 +88,9 @@ namespace UnitTestProject
         public void TestPlayerIsShootedAtTorsoPosition()
         {
             Player player = new Player("RandomPlayer");
-            player.IsShootedAt("Torse");
+            Position torso = Positions.GetPositionByString("Torse");
+
+            player.IsShootedAt(torso);
 
             Assert.AreEqual(-3, player.Score);
         }
@@ -83,7 +99,9 @@ namespace UnitTestProject
         public void TestPlayerIsShootedAtBackPosition()
         {
             Player player = new Player("RandomPlayer");
-            player.IsShootedAt("Dos");
+            Position back = Positions.GetPositionByString("Dos");
+
+            player.IsShootedAt(back);
 
             Assert.AreEqual(-2, player.Score);
         }
@@ -92,7 +110,9 @@ namespace UnitTestProject
         public void TestPlayerIsShootedAtWrongPosition()
         {
             Player player = new Player("RandomPlayer");
-            player.IsShootedAt("afezger");
+            Position undefinedPosition = Positions.GetPositionByString("afezger");
+
+            player.IsShootedAt(undefinedPosition);
 
             Assert.AreEqual(0, player.Score);
         }

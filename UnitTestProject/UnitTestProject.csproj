@@ -52,6 +52,7 @@
     <Compile Include="PositionsTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="PlayerTest.cs" />
+    <Compile Include="FileReaderTest.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
@@ -60,6 +61,10 @@
     <ProjectReference Include="..\Domain\Domain.csproj">
       <Project>{2df1f3d1-782e-4e6d-bedd-db6f88db3bb6}</Project>
       <Name>Domain</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\FileStream\FileStream.csproj">
+      <Project>{2e31ae9f-29b5-4bba-9ed6-3501bd3a3b7a}</Project>
+      <Name>FileStream</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(VSToolsPath)\TeamTest\Microsoft.TestTools.targets" Condition="Exists('$(VSToolsPath)\TeamTest\Microsoft.TestTools.targets')" />

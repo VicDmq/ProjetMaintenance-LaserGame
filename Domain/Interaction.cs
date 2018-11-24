@@ -6,17 +6,17 @@ namespace Domain
 {
     public class Interaction
     {
-        private Player shooter;
+        private readonly Player shooter;
 
-        private Player target;
+        private readonly Player target;
 
-        private Position position;
+        private readonly Position position;
 
-        public Interaction(Player shooter, Player target, string positionName)
+        public Interaction(Player shooter, Player target, Position position)
         {
             this.shooter = shooter;
             this.target = target;
-            this.position = Positions.GetPositionByString(positionName);
+            this.position = position;
         }
     }
 }

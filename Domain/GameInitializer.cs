@@ -1,36 +1,42 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using FileStream;
 
 namespace Domain
 {
     public static class GameInitializer
     {
-        static public Scoreboards Initialize()
+        public static Scoreboards Initialize(string relativeFilePath)
         {
             Scoreboards gameScoreboards = new Scoreboards();
 
-
-            //DO SOME STUFF
-
+            List<Array> interactions = FileReader.ReadInteractions(relativeFilePath);
+            for (int i = 0; i < interactions.Count; i++)
+            {
+                CreateInteraction(gameScoreboards, (string[])interactions[i]);
+            }
 
             return gameScoreboards;
         }
 
         //args contient tout les arguments nécessaires à la création d'une interaction
         //Ces arguments sont stockés sous la forme d'une string
-        static private void AddInteraction(List<Interaction> interactions, string[] args)
+        private static void CreateInteraction(Scoreboards gameScoreboards, string[] args)
         {
+            Player shooter = FindPlayerByName(gameScoreboards.GamePlayers, args[0]);
+            Player target = FindPlayerByName(gameScoreboards.GamePlayers, args[1]);
+            Position position = Positions.GetPositionByString(args[2]);
 
+            shooter.ShootAt(position);
+            target.IsShootedAt(position);
+
+            Interaction newInteraction = new Interaction(shooter, target, position);
+
+            gameScoreboards.GameInteractions.Add(newInteraction);
         }
 
-        static private void AddPlayer(List<Player> players, string name)
-        {
-            Player newPlayer = new Player(name);
-            players.Add(newPlayer);
-        }
-
-        static private Player FindPlayerByName(List<Player> players, string name)
+        private static Player FindPlayerByName(List<Player> players, string name)
         {
             foreach (Player player in players)
             {
@@ -43,6 +49,12 @@ namespace Domain
 
             //Appel récursif sauf que cette fois le joueur a été crée
             return FindPlayerByName(players, name);
+        }
+
+        private static void AddPlayer(List<Player> players, string name)
+        {
+            Player newPlayer = new Player(name);
+            players.Add(newPlayer);
         }
     }
 }

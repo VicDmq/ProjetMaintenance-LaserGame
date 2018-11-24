@@ -24,15 +24,13 @@ namespace Domain
             get { return this.score; }
         }
 
-        public void ShootAt(string positionName)
+        public void ShootAt(Position position)
         {
-            Position position = Positions.GetPositionByString(positionName);
             this.score += position.Bonus;
         }
 
-        public void IsShootedAt(string positionName)
+        public void IsShootedAt(Position position)
         {
-            Position position = Positions.GetPositionByString(positionName);
             this.score -= position.Malus;
         }
     }
