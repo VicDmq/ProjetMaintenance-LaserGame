@@ -15,7 +15,13 @@ namespace FileStream
             for (int i = 0; i < lines.Length; i++)
             {
                 string[] args = SplitLineIntoStringArgs(lines[i]);
-                interactionsArgs.Add(args);
+
+                if (args.Length == 3)
+                    interactionsArgs.Add(args);
+
+                else
+                    Console.WriteLine("Erreur lors de la lecture du fichier à la ligne {0} : Nombre d'argument trop important"
+                        , i + 1);
             }
 
             return interactionsArgs;
