@@ -1,0 +1,3 @@
+﻿Victor : Clément : Arme
+Clément : Quentin : Torse
+Romain : Victor : Dos

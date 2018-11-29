@@ -18,5 +18,10 @@ namespace Domain
             this.target = target;
             this.position = position;
         }
+
+        public bool ShooterNameIs(string name)
+        {
+            return shooter.Name == name;
+        }
     }
 }

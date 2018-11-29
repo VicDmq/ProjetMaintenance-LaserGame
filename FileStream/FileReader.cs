@@ -10,15 +10,15 @@ namespace FileStream
         {
             string[] lines = File.ReadAllLines(relativeFilePath);
 
-            List<Array> interactions = new List<Array>();
+            List<Array> interactionsArgs = new List<Array>();
 
             for (int i = 0; i < lines.Length; i++)
             {
                 string[] args = SplitLineIntoStringArgs(lines[i]);
-                interactions.Add(args);
+                interactionsArgs.Add(args);
             }
 
-            return interactions;
+            return interactionsArgs;
         }
 
         private static string[] SplitLineIntoStringArgs(string line)
