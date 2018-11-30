@@ -55,5 +55,15 @@ namespace Domain
 
             return new Position("", 0, 0);
         }
+
+        static public string[] GetAllPosition()
+        {
+            string[] allPosition = new string[positions.Length];
+
+            for (int i = 0; i < positions.Length; i++) {
+                allPosition[i] = positions[i].Name;
+            }
+             return allPosition;
+        }
     }
 }

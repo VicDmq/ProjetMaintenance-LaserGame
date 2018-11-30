@@ -18,5 +18,19 @@ namespace Domain
             this.target = target;
             this.position = position;
         }
+
+        public Player Shooter
+        {
+            get { return this.shooter; }
+        }
+        public Player Target
+        {
+            get { return this.target; }
+
+        }
+        public Position Position
+        {
+            get { return this.position; }
+        }
     }
 }
