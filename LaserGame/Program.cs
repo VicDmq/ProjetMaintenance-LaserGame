@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Domain;
 
 namespace LaserGame
 {
@@ -10,8 +11,18 @@ namespace LaserGame
     {
         static void Main(string[] args)
         {
-            Console.WriteLine("HelloWorld");
-            Console.ReadKey();
+            ConsoleController consoleController = new ConsoleController();
+
+            string consoleReturn = "";
+
+            while (consoleReturn != "exit")
+            {
+                string command = Console.ReadLine();
+
+                consoleReturn = consoleController.ExecuteCommand(command);
+
+                Console.WriteLine(consoleReturn + "\n");
+            }
         }
     }
 }

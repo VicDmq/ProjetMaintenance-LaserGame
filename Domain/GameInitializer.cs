@@ -7,11 +7,13 @@ namespace Domain
 {
     public static class GameInitializer
     {
-        public static Scoreboards Initialize(string relativeFilePath)
+        public static string relativeFolderPath = "../../Games/";
+
+        public static Scoreboards Initialize(string fileName)
         {
             Scoreboards gameScoreboards = new Scoreboards();
 
-            List<Array> interactions = FileReader.ReadInteractions(relativeFilePath);
+            List<Array> interactions = FileReader.ReadInteractions(relativeFolderPath + fileName + ".txt");
             for (int i = 0; i < interactions.Count; i++)
             {
                 CreateInteraction(gameScoreboards, (string[])interactions[i]);
