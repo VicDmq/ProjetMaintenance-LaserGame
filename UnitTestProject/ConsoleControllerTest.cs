@@ -17,7 +17,13 @@ namespace UnitTestProject
         public void InitializeTests()
         {
             consoleController = new ConsoleController();
-            consoleController.SetGameScoreboards(new ScoreboardsImplementationTest());
+
+            var privateHelpMethod = typeof(ConsoleController).GetMethod("SetGameScoreboards",
+            BindingFlags.NonPublic | BindingFlags.Instance);
+
+            //Ici on invoque la méthode sur un objet ou l'interface a déjà été instancié
+            privateHelpMethod.Invoke(consoleController, new object[] { new ScoreboardsImplementationTest()});
+           // consoleController.SetGameScoreboards(new ScoreboardsImplementationTest());
         }
 
         [TestMethod]
@@ -28,14 +34,29 @@ namespace UnitTestProject
         }
 
         [TestMethod]
-        public void TestParseCommandWithHelpArg()
+        public void TestParseCommandWithHelpArgAndIScoreboardsIsInstanciated()
         {
             string result = consoleController.ExecuteCommand("help");
 
             var privateHelpMethod = typeof(ConsoleController).GetMethod("Help",
                         BindingFlags.NonPublic | BindingFlags.Instance);
 
+            //Ici on invoque la méthode sur un objet ou l'interface a déjà été instancié
             string expectedValue = (string)privateHelpMethod.Invoke(consoleController, new object[] { });
+
+            Assert.AreEqual(expectedValue, result);
+        }
+
+        [TestMethod]
+        public void TestParseCommandWithHelpArgAndIScoreboardsIsNotInstanciated()
+        {
+            string result = new ConsoleController().ExecuteCommand("help");
+
+            var privateHelpMethod = typeof(ConsoleController).GetMethod("Help",
+                        BindingFlags.NonPublic | BindingFlags.Instance);
+
+            //Ici on invoque la méthode sur un objet ou l'interface n'a pas été instancié
+            string expectedValue = (string)privateHelpMethod.Invoke(new ConsoleController(), new object[] { });
 
             Assert.AreEqual(expectedValue, result);
         }
@@ -51,9 +72,17 @@ namespace UnitTestProject
         [TestMethod]
         public void TestParseCommandWithNewFileArgs()
         {
-            string result = consoleController.ExecuteCommand("new Game1");
+            string result = consoleController.ExecuteCommand("new ../../LaserGame/Games/Game1");
 
             Assert.AreEqual("Votre nouvelle partie a bien été lue", result);
+        }
+
+        [TestMethod]
+        public void TestParseCommandWithWrongNewFileArgs()
+        {
+            string result = consoleController.ExecuteCommand("new FileA");
+
+            Assert.AreEqual("Le fichier \"FileA.txt\" n'a pas pu être trouvé", result);
         }
 
         [TestMethod]
@@ -120,6 +149,69 @@ namespace UnitTestProject
             Assert.AreEqual("Executing GetShootAtPlayerAtPosition with args : Quentin and Clément and Dos", result);
         }
 
+        [TestMethod]
+        public void Test4ArgumentsIsIncorrect()
+        {
+            string result = consoleController.ExecuteCommand("Arg1 Arg2 Arg3 Arg4");
+
+            Assert.AreEqual("Le nombre d'arguments (4) n'est pas correct", result);
+        }
+
+        [TestMethod]
+        public void TestMoreThan5ArgumentsIsIncorrect()
+        {
+            string result = consoleController.ExecuteCommand("Arg1 Arg2 Arg3 Arg4 Arg5 Arg6");
+
+            Assert.AreEqual("Le nombre d'arguments (6) n'est pas correct", result);
+        }
+
+        [TestMethod]
+        public void TestWith1ArgAndArgIsIncorrect()
+        {
+            string result = consoleController.ExecuteCommand("Arg1");
+
+            Assert.AreEqual("Le terme \"Arg1\" n'est pas reconnu", result);
+        }
+
+        [TestMethod]
+        public void TestWith2ArgsAndFirstArgIsIncorrect()
+        {
+            string result = consoleController.ExecuteCommand("Arg1 Arg2");
+
+            Assert.AreEqual("Le terme \"Arg1\" n'est pas reconnu", result);
+        }
+
+        [TestMethod]
+        public void TestWith3ArgsAndSecondArgIsIncorrect()
+        {
+            string result = consoleController.ExecuteCommand("Arg1 Arg2 Arg3");
+
+            Assert.AreEqual("Le terme \"Arg2\" n'est pas reconnu", result);
+        }
+
+        [TestMethod]
+        public void TestWith5ArgsAndSecondArgIsIncorrect()
+        {
+            string result = consoleController.ExecuteCommand("Arg1 Arg2 Arg3 At Arg5");
+
+            Assert.AreEqual("Le terme \"Arg2\" n'est pas reconnu", result);
+        }
+
+        [TestMethod]
+        public void TestWith5ArgsAndFourthArgIsIncorrect()
+        {
+            string result = consoleController.ExecuteCommand("Arg1 shootBy Arg3 Arg4 Arg5");
+
+            Assert.AreEqual("Le terme \"Arg4\" n'est pas reconnu", result);
+        }
+
+        [TestMethod]
+        public void TestWith5ArgsAndSecondArgAndFourthArgAreIncorrect()
+        {
+            string result = consoleController.ExecuteCommand("Arg1 Arg2 Arg3 Arg4 Arg5");
+
+            Assert.AreEqual("Les termes \"Arg2\" et \"Arg4\" ne sont pas reconnus", result);
+        }
     }
 
     public class ScoreboardsImplementationTest : IScoreboards

@@ -9,31 +9,56 @@ namespace LaserGame
 {
     public class ConsoleController
     {
-        private IScoreboards gameScoreboards; //TODO remplacer par interface
+        private IScoreboards gameScoreboards;
 
-        public void SetGameScoreboards(IScoreboards scoreboardsImplementation)
+        public ConsoleController()
+        {
+            Console.WriteLine("Commencez par rentrer un nom de fichier de partie ou tapez une des commandes suivantes\n");
+            Console.WriteLine(this.Help() + "\n");
+        }
+
+        private void SetGameScoreboards(IScoreboards scoreboardsImplementation)
         {
             this.gameScoreboards = scoreboardsImplementation;
         }
 
+        private IScoreboards GetGameScoreboards()
+        {
+            if (IScoreboardsIsInstanciated())
+                return this.gameScoreboards;
+            else
+                throw new Exception("Il faut d'abord lire un fichier avant d'avoir accès à ces commandes");
+        }
+
+        private bool IScoreboardsIsInstanciated()
+        {
+            return this.gameScoreboards != null;
+        }
+
         public string ExecuteCommand(string command)
         {
-            string[] args = command.Split(' ');
+            string[] args = command.Split(new char[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
 
-            switch (args.Length)
+            try
             {
-                case 1:
-                    return ParseCommandWith1Parameter(args);
-                case 2:
-                    return ParseCommandWith2Parameters(args);
-                case 3:
-                    return ParseCommandWith3Parameters(args);
-                case 5:
-                    return ParseCommandWith5Parameters(args);
-
+                switch (args.Length)
+                {
+                    case 1:
+                        return ParseCommandWith1Parameter(args);
+                    case 2:
+                        return ParseCommandWith2Parameters(args);
+                    case 3:
+                        return ParseCommandWith3Parameters(args);
+                    case 5:
+                        return ParseCommandWith5Parameters(args);
+                    default:
+                        throw new Exception("Le nombre d'arguments (" + args.Length + ") n'est pas correct");
+                }
             }
-
-            throw new Exception();
+            catch (Exception e)
+            {
+                return e.Message;
+            }
         }
 
         private string ParseCommandWith1Parameter(string[] args)
@@ -45,9 +70,9 @@ namespace LaserGame
                 return Help();
 
             if (args[0] == "global")
-                return gameScoreboards.GetGlobalScore();
+                return GetGameScoreboards().GetGlobalScore();
 
-            throw new Exception();
+            throw new Exception("Le terme \"" + args[0] + "\" n'est pas reconnu");
         }
 
         private string ParseCommandWith2Parameters(string[] args)
@@ -56,47 +81,66 @@ namespace LaserGame
                 return ReadNewGameFile(args[1]);
 
             if (args[0] == "score")
-                return gameScoreboards.GetScorePlayer(args[1]);
+                return GetGameScoreboards().GetScorePlayer(args[1]);
 
             if (args[0] == "shootBy")
-                return gameScoreboards.GetShootByPlayers(args[1]);
+                return GetGameScoreboards().GetShootByPlayers(args[1]);
 
             if (args[0] == "shootAt")
-                return gameScoreboards.GetShootAtPlayers(args[1]);
+                return GetGameScoreboards().GetShootAtPlayers(args[1]);
 
             if (args[0] == "allStat")
-                return gameScoreboards.GetAllPlayerStatistics(args[1]);
+                return GetGameScoreboards().GetAllPlayerStatistics(args[1]);
 
-            throw new Exception();
+            throw new Exception("Le terme \"" + args[0] + "\" n'est pas reconnu");
         }
 
         private string ParseCommandWith3Parameters(string[] args)
         {
             if (args[1] == "shootBy")
-                return gameScoreboards.GetShootByPlayer(args[0], args[2]);
+                return GetGameScoreboards().GetShootByPlayer(args[0], args[2]);
 
             if (args[1] == "shootAt")
-                return gameScoreboards.GetShootAtPlayer(args[0], args[2]);
+                return GetGameScoreboards().GetShootAtPlayer(args[0], args[2]);
 
-            throw new Exception();
-
+            throw new Exception("Le terme \"" + args[1] + "\" n'est pas reconnu");
         }
 
         private string ParseCommandWith5Parameters(string[] args)
         {
             if (args[1] == "shootBy" && args[3] == "At")
-                return gameScoreboards.GetShootByPlayerAtPosition(args[0], args[2], args[4]);
+                return GetGameScoreboards().GetShootByPlayerAtPosition(args[0], args[2], args[4]);
 
             if (args[1] == "shootAt" && args[3] == "At")
-                return gameScoreboards.GetShootAtPlayerAtPosition(args[0], args[2], args[4]);
+                return GetGameScoreboards().GetShootAtPlayerAtPosition(args[0], args[2], args[4]);
 
-            throw new Exception();
+            throw new Exception(GetErrorMessageForCommandWith5Parameters(args));
         }
-            private string ReadNewGameFile(string fileName)
-        {
 
-            Scoreboards newScoreboards = GameInitializer.Initialize(fileName);
-            this.SetGameScoreboards(newScoreboards);
+        private string GetErrorMessageForCommandWith5Parameters(string[] args)
+        {
+            string[] validArgs = new string[] { "shootBy", "shootAt", "At" };
+
+            if (!validArgs.Contains<string>(args[1]) && !validArgs.Contains<string>(args[3]))
+                return "Les termes \"" + args[1] + "\" et \"" + args[3] + "\" ne sont pas reconnus";
+            else
+            {
+                string invalidArgument = validArgs.Contains<string>(args[1]) ? args[3] : args[1];
+                return "Le terme \"" + invalidArgument + "\" n'est pas reconnu";
+            }
+        }
+
+        private string ReadNewGameFile(string fileName)
+        {
+            try
+            {
+                Scoreboards newScoreboards = GameInitializer.Initialize(fileName);
+                this.SetGameScoreboards(newScoreboards);
+            }
+            catch (System.IO.IOException)
+            {
+                return "Le fichier \"" + fileName + ".txt\" n'a pas pu être trouvé";
+            }
 
             return "Votre nouvelle partie a bien été lue";
         }
@@ -105,19 +149,23 @@ namespace LaserGame
         {
             string help;
 
-            help = "Voici la liste des commandes possibles :\n";
-            help += "exit : Quitte l'application\n";
-            help += "help : Affiche l'aide\n";
-            help += "global : Donne le score de tous les joueurs\n";
-            help += "new <fileName> : Récupère un fichier de données d'une partie\n";
-            help += "score <playerName> : Donne le score de <playerName>\n";
-            help += "shootBy <playerName> : Donne la liste des joueurs qui ont tiré sur <playerName> à chacune des positions\n";
-            help += "shootAt <playerName> : Donne la liste des joueurs sur qui <playerName> a tiré à chacune des positions\n";
-            help += "allStat <playerName> : Donne toutes les informations de <playerName>\n";
-            help += "<playerName1> shootBy <playerName2> : Donne les positions ou <playerName1> s'est fait tiré dessus par <playerName2>\n";
-            help += "<playerName1> shootAt <playerName2> : Donne les positions ou <playerName1> a tiré sur <playerName2>\n";
-            help += "<playerName1> shootBy <playerName2> At <position> : Donne le nombre de fois ou <playerName1> s'est fait tiré dessus par <playerName2> à <position>\n";
-            help += "<playerName1> shootAt <playerName2> At <position> : Donne le nombre de fois ou <playerName1> a tiré sur <playerName2> à <position>\n";
+            help = "Voici la liste des commandes possibles :";
+            help += "\nexit : Quitte l'application";
+            help += "\nhelp : Affiche l'aide";
+            help += "\nnew <fileName> : Récupère un fichier de données d'une partie";
+
+            if (this.IScoreboardsIsInstanciated())
+            {
+                help += "\nglobal : Donne le score de tous les joueurs";
+                help += "\nscore <playerName> : Donne le score de <playerName>";
+                help += "\nshootBy <playerName> : Donne la liste des joueurs qui ont tiré sur <playerName> à chacune des positions";
+                help += "\nshootAt <playerName> : Donne la liste des joueurs sur qui <playerName> a tiré à chacune des positions";
+                help += "\nallStat <playerName> : Donne toutes les informations de <playerName>";
+                help += "\n<playerName1> shootBy <playerName2> : Donne les positions ou <playerName1> s'est fait tiré dessus par <playerName2>";
+                help += "\n<playerName1> shootAt <playerName2> : Donne les positions ou <playerName1> a tiré sur <playerName2>";
+                help += "\n<playerName1> shootBy <playerName2> At <position> : Donne le nombre de fois ou <playerName1> s'est fait tiré dessus par <playerName2> à <position>";
+                help += "\n<playerName1> shootAt <playerName2> At <position> : Donne le nombre de fois ou <playerName1> a tiré sur <playerName2> à <position>";
+            }
 
             return help;
         }

@@ -11,19 +11,18 @@ namespace LaserGame
     {
         static void Main(string[] args)
         {
-            Scoreboards sc = GameInitializer.Initialize("Game1");
-            ConsoleController console = new ConsoleController(sc);
+            ConsoleController consoleController = new ConsoleController();
 
-            Console.Write(console.DisplayHelp());
+            string consoleReturn = "";
 
-            string actionCommande;
+            while (consoleReturn != "exit")
+            {
+                string command = Console.ReadLine();
 
-            do {
-                actionCommande = Console.ReadLine();
+                consoleReturn = consoleController.ExecuteCommand(command);
 
-                Console.WriteLine(console.parseCommand(actionCommande));
-
-            } while (actionCommande != "exit");
+                Console.WriteLine(consoleReturn + "\n");
+            }
         }
     }
 }
