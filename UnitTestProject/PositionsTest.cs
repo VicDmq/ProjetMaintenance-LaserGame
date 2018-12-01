@@ -46,10 +46,14 @@ namespace UnitTestProject
         [TestMethod]
         public void TestGetPositionWithWrongString()
         {
-            Position expectedPosition = new Position("", 0, 0);
-            Position position = Positions.GetPositionByString("fzefezze");
-
-            Assert.AreEqual(expectedPosition, position);
+            try
+            {
+                Position position = Positions.GetPositionByString("fzefezze");
+            }
+            catch (Exception e)
+            {
+                Assert.AreEqual("Cette position n'existe pas", e.Message);
+            }
         }
     }
 }

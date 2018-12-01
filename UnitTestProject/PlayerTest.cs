@@ -52,17 +52,6 @@ namespace UnitTestProject
         }
 
         [TestMethod]
-        public void TestPlayerShootAtWrongPosition()
-        {
-            Player player = new Player("RandomPlayer");
-            Position undefinedPosition = Positions.GetPositionByString("afezger");
-
-            player.ShootAt(undefinedPosition);
-
-            Assert.AreEqual(0, player.Score);
-        }
-
-        [TestMethod]
         public void TestPlayerIsShootedAtShoulderPosition()
         {
             Player player = new Player("RandomPlayer");
@@ -104,17 +93,6 @@ namespace UnitTestProject
             player.IsShootedAt(back);
 
             Assert.AreEqual(-2, player.Score);
-        }
-
-        [TestMethod]
-        public void TestPlayerIsShootedAtWrongPosition()
-        {
-            Player player = new Player("RandomPlayer");
-            Position undefinedPosition = Positions.GetPositionByString("afezger");
-
-            player.IsShootedAt(undefinedPosition);
-
-            Assert.AreEqual(0, player.Score);
         }
     }
 }

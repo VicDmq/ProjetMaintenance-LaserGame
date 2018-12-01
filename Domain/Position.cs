@@ -33,6 +33,25 @@ namespace Domain
         {
             get { return this.malus; }
         }
+
+        public bool Equals(Position position)
+        {
+            return this.Name == position.Name;
+        }
+
+        public override bool Equals(Object obj)
+        {
+            if (!(obj is Position position))
+                return false;
+
+            return this.Equals(position);
+        }
+
+        //Pour éviter un warning
+        public override int GetHashCode()
+        {
+            return base.GetHashCode();
+        }
     }
 
     static public class Positions
@@ -45,6 +64,16 @@ namespace Domain
             new Position("Dos", 8, 2)
         };
 
+        static public Position[] GetPositions()
+        {
+            return positions;
+        }
+
+        static public int GetPositionsLength()
+        {
+            return positions.Length;
+        }
+
         static public Position GetPositionByString(string positionName)
         {
             for (int i = 0; i < positions.Length; i++)
@@ -53,17 +82,19 @@ namespace Domain
                     return positions[i];
             }
 
-            return new Position("", 0, 0);
+            throw new Exception("Cette position n'existe pas");
         }
 
-        static public string[] GetAllPosition()
+        static public string[] GetPositionsNames()
         {
-            string[] allPosition = new string[positions.Length];
+            string[] positionsNames = new string[positions.Length];
 
-            for (int i = 0; i < positions.Length; i++) {
-                allPosition[i] = positions[i].Name;
+            for (int i = 0; i < positions.Length; i++)
+            {
+                positionsNames[i] = positions[i].Name;
             }
-             return allPosition;
+
+            return positionsNames;
         }
     }
 }

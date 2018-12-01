@@ -33,5 +33,24 @@ namespace Domain
         {
             this.score -= position.Malus;
         }
+
+        public bool Equals(Player player)
+        {
+            return this.Name == player.Name;
+        }
+
+        public override bool Equals(Object obj)
+        {
+            if (!(obj is Player player))
+                return false;
+
+            return this.Equals(player);
+        }
+
+        //Pour éviter un warning
+        public override int GetHashCode()
+        {
+            return base.GetHashCode();
+        }
     }
 }
