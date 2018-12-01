@@ -10,3 +10,5 @@ Quentin : Clément : Torse
 Romain : Quentin : Arme
 Romain : Victor : Arme
 Victor : Clément : Épaule
+Victor : Clément : Épaule1
+Victor : Clément : Épaule : aaa

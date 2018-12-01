@@ -161,8 +161,8 @@ namespace LaserGame
                 help += "\nshootBy <playerName> : Donne la liste des joueurs qui ont tiré sur <playerName> à chacune des positions";
                 help += "\nshootAt <playerName> : Donne la liste des joueurs sur qui <playerName> a tiré à chacune des positions";
                 help += "\nallStat <playerName> : Donne toutes les informations de <playerName>";
-                help += "\n<playerName1> shootBy <playerName2> : Donne les positions ou <playerName1> s'est fait tiré dessus par <playerName2>";
-                help += "\n<playerName1> shootAt <playerName2> : Donne les positions ou <playerName1> a tiré sur <playerName2>";
+                help += "\n<playerName1> shootBy <playerName2> : Donne pour chaque position, le nombre de fois ou <playerName1> s'est fait tiré dessus par <playerName2>";
+                help += "\n<playerName1> shootAt <playerName2> : Donne pour chaque position, le nombre de fois <playerName1> a tiré sur <playerName2>";
                 help += "\n<playerName1> shootBy <playerName2> At <position> : Donne le nombre de fois ou <playerName1> s'est fait tiré dessus par <playerName2> à <position>";
                 help += "\n<playerName1> shootAt <playerName2> At <position> : Donne le nombre de fois ou <playerName1> a tiré sur <playerName2> à <position>";
             }
