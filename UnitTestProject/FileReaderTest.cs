@@ -10,17 +10,6 @@ namespace UnitTestProject
     {
         private readonly string[] expectedArgs = new string[] { "Clément", "Victor", "Épaule" };
 
-        private bool CheckIfArgsAreCorrect(string[] args)
-        {
-            for (int i = 0; i < args.Length; i++)
-            {
-                if (expectedArgs[i] != args[i])
-                    return false;
-            }
-
-            return true;
-        }
-
         private string[] GetAndInvokeSplitLineIntoStringArgsMethods(string input)
         {
             // On récupère via reflection la méthode à invoker
@@ -37,7 +26,7 @@ namespace UnitTestProject
             string inputWithoutMystake = "Clément : Victor : Épaule";
             string[] args = this.GetAndInvokeSplitLineIntoStringArgsMethods(inputWithoutMystake);
 
-            Assert.IsTrue(CheckIfArgsAreCorrect(args));
+            CollectionAssert.AreEqual(expectedArgs, args);
         }
 
         [TestMethod]
@@ -46,7 +35,7 @@ namespace UnitTestProject
             string inputWithMystakes = "Clément     ::Victor:  : Épaule";
             string[] args = this.GetAndInvokeSplitLineIntoStringArgsMethods(inputWithMystakes);
 
-            Assert.IsTrue(CheckIfArgsAreCorrect(args));
+            CollectionAssert.AreEqual(expectedArgs, args);
         }
     }
 }
