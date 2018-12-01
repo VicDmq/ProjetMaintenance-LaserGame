@@ -6,6 +6,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\FileStream\FileStream.csproj" />
+    <ProjectReference Include="..\StringFormatter\StringFormatter.csproj" />
   </ItemGroup>
 
 </Project>
