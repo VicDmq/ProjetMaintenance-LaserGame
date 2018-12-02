@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using StringFormatter;
 
 namespace Domain
 {
@@ -26,82 +27,231 @@ namespace Domain
             get { return this.gamePlayers; }
         }
 
-
-        public int PlayerShootedByAtPosition(string shooter, string target, string position)
+        public Player FindPlayerByName(string playerName)
         {
-            int numberTouchedAtPosition = 0;
-            
-            foreach(Interaction interaction in GameInteractions)
+            foreach (Player player in this.gamePlayers)
             {
-                if (interaction.Shooter.Name == shooter && interaction.Target.Name == target && interaction.Position.Name == position)
-                    numberTouchedAtPosition++;
-            }      
-            return numberTouchedAtPosition;
-        }
-
-
-        public int[] PlayerShootedBy(string shooter, string target)
-        {
-            int[] shotPositions = new int[Positions.GetAllPosition().Length];
-
-            for(int i = 0; i < Positions.GetAllPosition().Length; i++)
-                {
-                    shotPositions[i] = PlayerShootedByAtPosition(shooter, target, Positions.GetAllPosition()[i]);
-                }
-            return shotPositions;
-        }
-
-        public string[] GetTargetPossibilities(string shooter)
-        {
-            string[] targets = new string[GamePlayers.Count - 1];
-            int compteur = 0;
-
-            foreach(Player player in GamePlayers  ) 
-            {
-                if(player.Name != shooter)
-                {
-                    targets[compteur] = player.Name;
-                    compteur++;
-                }       
+                if (player.Name == playerName)
+                    return player;
             }
-            return targets;
+
+            throw new Exception("Le joueur \"" + playerName + "\" n'existe pas");
         }
 
-
-        public string[] ActionPlayer(string shooter)
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="player"></param>
+        /// <param name="target"></param>
+        /// <param name="position"></param>
+        /// <returns></returns>
+        private int ShootAtPlayerAtPosition(Player player, Player target, Position position)
         {
-            string[] targets = GetTargetPossibilities(shooter);
-            string[] actionList = new string[targets.Length];
-            int compteur = 0;
+            int nbTimes = 0;
 
-            foreach(string target in targets)
+            foreach (Interaction interaction in GameInteractions)
             {
-                int[] positionsByPlayer = PlayerShootedBy(shooter, target);
-                int scoreByPlayer = CalculScoreTarget(positionsByPlayer);
-                string actionByPlayer = target;
-
-                   for(int i=0; i < positionsByPlayer.Length; i++)
-                   {
-                   actionByPlayer = actionByPlayer + "," + positionsByPlayer[i].ToString();
-                   }
-
-                actionByPlayer = actionByPlayer + "," + scoreByPlayer.ToString();
-                actionList[compteur] = actionByPlayer;
-                compteur++;
+                if (interaction.Shooter.Equals(player) && interaction.Target.Equals(target) && interaction.Position.Equals(position))
+                    nbTimes++;
             }
-            return actionList;
+
+            return nbTimes;
         }
 
-
-        public int CalculScoreTarget(int[] positions)
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="player"></param>
+        /// <param name="target"></param>
+        /// <returns></returns>
+        private int[] ShootAtPlayer(Player player, Player target)
         {
-            int totalScoreByTarget = 0;
-            foreach(int position in positions)
+            Position[] positionsNames = Positions.GetPositions();
+            int[] nbTimesPerPosition = new int[positionsNames.Length];
+
+            for (int i = 0; i < positionsNames.Length; i++)
             {
-                totalScoreByTarget = totalScoreByTarget + position;
+                nbTimesPerPosition[i] = ShootAtPlayerAtPosition(player, target, positionsNames[i]);
             }
-            return totalScoreByTarget;
+
+            return nbTimesPerPosition;
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="player"></param>
+        /// <param name="playerIsShooter"></param>
+        /// <returns></returns>
+        private List<int[]> ShootAtOrByPlayers(Player player, bool playerIsShooterInsteadOfTarget)
+        {
+            List<Player> potentialTargets = GetOtherPlayers(player);
+            int positionsLength = Positions.GetPositionsLength();
+
+            List<int[]> nbTimesPerPlayerAndPerPositions = new List<int[]>();
+
+            foreach (Player target in potentialTargets)
+            {
+                int[] nbTimesPerPosition = playerIsShooterInsteadOfTarget ? ShootAtPlayer(player, target) : ShootAtPlayer(target, player);
+                nbTimesPerPlayerAndPerPositions.Add(nbTimesPerPosition);
+            }
+
+            return nbTimesPerPlayerAndPerPositions;
+        }
+
+        private List<Player> GetOtherPlayers(Player player)
+        {
+            List<Player> playersWithoutShooter = new List<Player>();
+            playersWithoutShooter.AddRange(this.gamePlayers);
+            playersWithoutShooter.Remove(player);
+
+            return playersWithoutShooter;
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="positions"></param>
+        /// <returns></returns>
+        private int GetScoreOfAllPositions(int[] nbTimesPerPosition, bool isBonusInsteadOfMalus)
+        {
+            Position[] positions = Positions.GetPositions();
+            int score = 0;
+
+            for (int i = 0; i < Positions.GetPositionsLength(); i++)
+            {
+                int bonusOrMalus = isBonusInsteadOfMalus ? positions[i].Bonus : -positions[i].Malus;
+                score += bonusOrMalus * nbTimesPerPosition[i];
+            }
+
+            return score;
+        }
+
+        private string GetTabForShootByOrAtPlayers(string playerName, bool playerIsShooterInsteadOfTarget)
+        {
+            Player player = this.FindPlayerByName(playerName);
+
+            int finalBonusOrMalusScore = 0;
+            string[] positionsNames = Positions.GetPositionsNames();
+            string returnedString = ScoreboardsFormatter.FormatPositionsNamesToRawString(positionsNames);
+            List<Player> otherPlayers = this.GetOtherPlayers(player);
+
+            List<int[]> nbTimesPerPlayerAndPerPosition = this.ShootAtOrByPlayers(player, playerIsShooterInsteadOfTarget);
+
+            for (int i = 0; i < nbTimesPerPlayerAndPerPosition.Count; i++)
+            {
+                int[] nbTimesPerPosition = nbTimesPerPlayerAndPerPosition[i];
+                returnedString += "\n" + ScoreboardsFormatter.FormatIntArrayToRawString(positionsNames, nbTimesPerPosition);
+
+                int bonusOrMalusScore = GetScoreOfAllPositions(nbTimesPerPosition, playerIsShooterInsteadOfTarget);
+                finalBonusOrMalusScore += bonusOrMalusScore;
+                returnedString += bonusOrMalusScore + ScoreboardsFormatter.GetStringWithNSpaces(5 - bonusOrMalusScore.ToString().Length)+ otherPlayers[i].Name;
+            }
+
+            string bonusOrMalus = playerIsShooterInsteadOfTarget ? "Bonus" : "Malus";
+            returnedString += "\n" + bonusOrMalus + " total : " + finalBonusOrMalusScore;
+
+            return returnedString;
+        }
+
+        private string GetRawForShootByOrAtPlayer(int[] nbTimesPerPosition, int score)
+        {
+            string[] positionsNames = Positions.GetPositionsNames();
+
+            string returnedText = ScoreboardsFormatter.FormatPositionsNamesToRawString(positionsNames);
+            returnedText += "\n" + ScoreboardsFormatter.FormatIntArrayToRawString(positionsNames, nbTimesPerPosition);
+            returnedText += score;
+
+            return returnedText;
+        }
+
+        //#######################
+        // Interface IScoreboards
+        //#######################
+
+        public string GetGlobalScore()
+        {
+            string globalScore = "";
+
+            foreach (Player player in this.gamePlayers)
+            {
+                globalScore += player.Name + " : " + player.Score;
+
+                bool playerIsLastOne = this.gamePlayers.IndexOf(player) == this.gamePlayers.Count - 1;
+                globalScore += playerIsLastOne ? "" : "\n";
+            }
+
+            return globalScore;
+        }
+
+        public string GetScorePlayer(string playerName)
+        {
+            Player player = this.FindPlayerByName(playerName);
+
+            return playerName + " : " + player.Score;
+        }
+
+        public string GetShootByPlayers(string playerName)
+        {
+            return this.GetTabForShootByOrAtPlayers(playerName, false);
+        }
+
+        public string GetShootAtPlayers(string playerName)
+        {
+            return this.GetTabForShootByOrAtPlayers(playerName, true);
+        }
+
+        public string GetAllPlayerStatistics(string playerName)
+        {
+            string returnedString = this.GetShootAtPlayers(playerName);
+            returnedString += "\n" + this.GetShootByPlayers(playerName);
+            returnedString += "\nScore total : " + FindPlayerByName(playerName).Score;
+
+            return returnedString;
+        }
+
+        public string GetShootByPlayer(string playerName, string shooterName)
+        {
+            Player player = this.FindPlayerByName(playerName);
+            Player shooter = this.FindPlayerByName(shooterName);
+
+            int[] nbTimesPerPosition = this.ShootAtPlayer(shooter, player);
+            int malusScore = this.GetScoreOfAllPositions(nbTimesPerPosition, false);
+
+            return this.GetRawForShootByOrAtPlayer(nbTimesPerPosition, malusScore);
+        }
+
+        public string GetShootAtPlayer(string playerName, string targetName)
+        {
+            Player player = this.FindPlayerByName(playerName);
+            Player target = this.FindPlayerByName(targetName);
+
+            int[] nbTimesPerPosition = this.ShootAtPlayer(player, target);
+            int bonusScore = this.GetScoreOfAllPositions(nbTimesPerPosition, true);
+
+            return this.GetRawForShootByOrAtPlayer(nbTimesPerPosition, bonusScore);
+        }
+
+        public string GetShootByPlayerAtPosition(string playerName, string shooterName, string positionName)
+        {
+            Player player = this.FindPlayerByName(playerName);
+            Player shooter = this.FindPlayerByName(shooterName);
+            Position position = Positions.GetPositionByString(positionName);
+
+            int nbTimes = this.ShootAtPlayerAtPosition(shooter, player, position);
+
+            return playerName + " s'est fait tiré dessus " + nbTimes + " fois à la position \"" + position.Name + "\" par " + shooterName;
+        }
+
+        public string GetShootAtPlayerAtPosition(string playerName, string targetName, string positionName)
+        {
+            Player player = this.FindPlayerByName(playerName);
+            Player target = this.FindPlayerByName(targetName);
+            Position position = Positions.GetPositionByString(positionName);
+
+            int nbTimes = this.ShootAtPlayerAtPosition(player, target, position);
+
+            return playerName + " a tiré " + nbTimes + " fois sur la position \"" + position.Name + "\" de " + targetName;
+        }
     }
 }

@@ -51,7 +51,7 @@ namespace StringFormatter
             return cell;
         }
 
-        private static string GetStringWithNSpaces(int nbSpaces)
+        public static string GetStringWithNSpaces(int nbSpaces)
         {
             string stringWithNSpaces = "";
 
