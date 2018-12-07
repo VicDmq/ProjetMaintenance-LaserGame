@@ -38,13 +38,6 @@ namespace Domain
             throw new Exception("Le joueur \"" + playerName + "\" n'existe pas");
         }
 
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="player"></param>
-        /// <param name="target"></param>
-        /// <param name="position"></param>
-        /// <returns></returns>
         private int ShootAtPlayerAtPosition(Player player, Player target, Position position)
         {
             int nbTimes = 0;
@@ -58,12 +51,6 @@ namespace Domain
             return nbTimes;
         }
 
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="player"></param>
-        /// <param name="target"></param>
-        /// <returns></returns>
         private int[] ShootAtPlayer(Player player, Player target)
         {
             Position[] positionsNames = Positions.GetPositions();
@@ -77,12 +64,6 @@ namespace Domain
             return nbTimesPerPosition;
         }
 
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="player"></param>
-        /// <param name="playerIsShooter"></param>
-        /// <returns></returns>
         private List<int[]> ShootAtOrByPlayers(Player player, bool playerIsShooterInsteadOfTarget)
         {
             List<Player> potentialTargets = GetOtherPlayers(player);
@@ -108,11 +89,6 @@ namespace Domain
             return playersWithoutShooter;
         }
 
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="positions"></param>
-        /// <returns></returns>
         private int GetScoreOfAllPositions(int[] nbTimesPerPosition, bool isBonusInsteadOfMalus)
         {
             Position[] positions = Positions.GetPositions();
@@ -130,13 +106,12 @@ namespace Domain
         private string GetTabForShootByOrAtPlayers(string playerName, bool playerIsShooterInsteadOfTarget)
         {
             Player player = this.FindPlayerByName(playerName);
+            List<int[]> nbTimesPerPlayerAndPerPosition = this.ShootAtOrByPlayers(player, playerIsShooterInsteadOfTarget);
+            List<Player> otherPlayers = this.GetOtherPlayers(player);
+            string[] positionsNames = Positions.GetPositionsNames();
 
             int finalBonusOrMalusScore = 0;
-            string[] positionsNames = Positions.GetPositionsNames();
             string returnedString = ScoreboardsFormatter.FormatPositionsNamesToRawString(positionsNames);
-            List<Player> otherPlayers = this.GetOtherPlayers(player);
-
-            List<int[]> nbTimesPerPlayerAndPerPosition = this.ShootAtOrByPlayers(player, playerIsShooterInsteadOfTarget);
 
             for (int i = 0; i < nbTimesPerPlayerAndPerPosition.Count; i++)
             {
